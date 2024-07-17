@@ -12,6 +12,8 @@ export function Post({author, publishedAt, content}) {
     'Post muito legal!'
   ])
 
+  const [newCommentText, setNewCommentText] = useState('')
+
   const publishedDateFormatted = format(publishedAt, "dd 'de' LLLL 'às' HH:mm", {
     locale: ptBR
   })
@@ -24,11 +26,12 @@ export function Post({author, publishedAt, content}) {
   function handleCreateNewComment(){
     event.preventDefault()
 
-    const newCommentText = event.target.comment.value
-
     setComments([...comments, newCommentText])
+    setNewCommentText("")
+  }
 
-    event.target.comment.value = ""
+  function handleNewCommentChange(){
+    setNewCommentText(event.target.value)
   }
 
   return (
@@ -51,16 +54,16 @@ export function Post({author, publishedAt, content}) {
       <div className={styles.content}>
         {content.map(line => {
           if(line.type === "paragraph"){
-            return <p>{line.content}</p>
+            return <p key={line.content}>{line.content}</p>
           } else if(line.type === "link") {
-            return <p><a href="#">{line.content}</a></p>
+            return <p key={line.content}><a href="#">{line.content}</a></p>
           }
         })}
       </div>
 
       <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Deixe seu Feedback</strong>
-        <textarea name='comment' placeholder="Deixe um comentário" />
+        <textarea  name='comment' placeholder="Deixe um comentário" value={newCommentText} onChange={handleNewCommentChange} />
 
         <footer>
           <button type="submit">Publicar</button>
@@ -69,7 +72,7 @@ export function Post({author, publishedAt, content}) {
 
       <div className={styles.commentList}>
         {comments.map(comment => {
-          return <Comment content={comment}/>
+          return <Comment key={comment} content={comment}/>
         })}
       </div>
     </article>
