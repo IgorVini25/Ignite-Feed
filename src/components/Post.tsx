@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react'
 import { Avatar } from './Avatar'
 import { Comment } from './Comment'
 import styles from './Post.module.css'
+import toast from 'react-hot-toast'
 
 interface iAuthor {
   name: string
@@ -46,6 +47,7 @@ export function Post({ post }: iPostProps) {
 
     setComments([...comments, newCommentText])
     setNewCommentText('')
+    toast.success('Comentário realizado com sucesso!')
   }
 
   function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {

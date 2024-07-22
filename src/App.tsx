@@ -5,6 +5,7 @@ import { Sidebar } from './components/Sidebar'
 import styles from './App.module.css'
 
 import './global.css'
+import { Toaster } from 'react-hot-toast'
 
 // author: { avatarUrl: "", name: "", role: ""}
 // publishedAt: Date
@@ -61,17 +62,22 @@ const posts: iPost[] = [
 
 function App() {
   return (
-    <div>
-      <Header />
-      <div className={styles.wrapper}>
-        <Sidebar />
-        <main>
-          {posts.map(post => {
-            return <Post key={post.id} post={post} />
-          })}
-        </main>
+    <>
+      <div>
+        <Toaster />
       </div>
-    </div>
+      <div>
+        <Header />
+        <div className={styles.wrapper}>
+          <Sidebar />
+          <main>
+            {posts.map(post => {
+              return <Post key={post.id} post={post} />
+            })}
+          </main>
+        </div>
+      </div>
+    </>
   )
 }
 

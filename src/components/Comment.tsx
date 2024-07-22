@@ -2,6 +2,7 @@ import { ThumbsUp, Trash } from '@phosphor-icons/react'
 import styles from './Comment.module.css'
 import { Avatar } from './Avatar'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 interface iCommentsProps {
   content: string
@@ -13,6 +14,7 @@ export function Comment({ content, onDeleteComment }: iCommentsProps) {
 
   function handleDeleteComment() {
     onDeleteComment(content)
+    toast.success('Comentário apagado com sucesso.')
   }
 
   function handleLikeComment() {
