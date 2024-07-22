@@ -1,46 +1,63 @@
 import { format, formatDistanceToNow } from 'date-fns'
-import ptBR from 'date-fns/locale/pt-BR'
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react'
 
 import { Avatar } from './Avatar'
 import { Comment } from './Comment'
 import styles from './Post.module.css'
-import { useState } from 'react'
 
-export function Post({ author, publishedAt, content }) {
+interface iAuthor {
+  name: string
+  role: string
+  avatarUrl: string
+}
+
+interface iContent {
+  type: 'paragraph' | 'link'
+  content: string
+}
+
+export interface iPost {
+  id: number
+  author: iAuthor
+  publishedAt: Date
+  content: iContent[]
+}
+
+interface iPostProps {
+  post: iPost
+}
+
+export function Post({ post }: iPostProps) {
   const [comments, setComments] = useState(['Post muito legal!'])
 
   const [newCommentText, setNewCommentText] = useState('')
 
   const publishedDateFormatted = format(
-    publishedAt,
-    "dd 'de' LLLL 'às' HH:mm",
-    {
-      locale: ptBR
-    }
+    post.publishedAt,
+    "dd 'de' LLLL 'às' HH:mm"
   )
 
-  const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
-    locale: ptBR,
+  const publishedDateRelativeToNow = formatDistanceToNow(post.publishedAt, {
     addSuffix: true
   })
 
-  function handleCreateNewComment() {
+  function handleCreateNewComment(event: FormEvent) {
     event.preventDefault()
 
     setComments([...comments, newCommentText])
     setNewCommentText('')
   }
 
-  function handleNewCommentChange() {
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('')
     setNewCommentText(event.target.value)
   }
 
-  function handleNewCommentInvalid() {
+  function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('Esse campo é obrigatório!')
   }
 
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     const commentsWithoutDeletedOne = comments.filter(comment => {
       return comment !== commentToDelete
     })
@@ -54,24 +71,24 @@ export function Post({ author, publishedAt, content }) {
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src={author.avatarUrl} />
+          <Avatar src={post.author.avatarUrl} />
 
           <div className={styles.authorInfo}>
-            <strong>{author.name}</strong>
-            <span>{author.role}</span>
+            <strong>{post.author.name}</strong>
+            <span>{post.author.role}</span>
           </div>
         </div>
 
         <time
           title={publishedDateFormatted}
-          dateTime={publishedAt.toISOString()}
+          dateTime={post.publishedAt.toISOString()}
         >
           {publishedDateRelativeToNow}
         </time>
       </header>
 
       <div className={styles.content}>
-        {content.map(line => {
+        {post.content.map(line => {
           if (line.type === 'paragraph') {
             return <p key={line.content}>{line.content}</p>
           } else if (line.type === 'link') {
